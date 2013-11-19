@@ -335,8 +335,6 @@ static CGFloat const kForceHideAnimationDuration = 0.1f;
         alertBanner.subtitleLabel.text = subtitle;
     }
     
-    alertBanner.titleLabel.text = !title ? @" " : title;
-    alertBanner.subtitleLabel.text = subtitle;
     alertBanner.style = style;
     alertBanner.position = position;
     alertBanner.state = ALAlertBannerStateHidden;
