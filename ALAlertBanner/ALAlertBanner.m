@@ -309,7 +309,7 @@ static CGFloat const kForceHideAnimationDuration = 0.1f;
 
 + (ALAlertBanner *)alertBannerForView:(UIView *)view style:(ALAlertBannerStyle)style position:(ALAlertBannerPosition)position attributedTitle:(NSAttributedString *)attributedTitle attributedSubtitle:(NSAttributedString *)attributedSubtitle tappedBlock:(void(^)(ALAlertBanner *alertBanner))tappedBlock
 {
-    ALAlertBanner *alertBanner = [ALAlertBanner createAlertBannerForView:view style:style position:position title:attributedSubtitle subtitle:attributedSubtitle];
+    ALAlertBanner *alertBanner = [ALAlertBanner createAlertBannerForView:view style:style position:position title:attributedTitle subtitle:attributedSubtitle];
     alertBanner.allowTapToDismiss = tappedBlock ? NO : alertBanner.allowTapToDismiss;
     alertBanner.tappedBlock = tappedBlock;
     return alertBanner;
@@ -721,19 +721,23 @@ static CGFloat const kForceHideAnimationDuration = 0.1f;
             fillColor = [UIColor colorWithRed:(48/255.0) green:(110/255.0) blue:(173/255.0) alpha:1.f];
             break;
         case ALAlertBannerStyleWarning:
-            fillColor = [UIColor colorWithRed:(211/255.0) green:(209/255.0) blue:(100/255.0) alpha:1.f];
+            // for now, ALAlertBannerStyleWarning don't use gradient
+//            fillColor = [UIColor colorWithRed:(211/255.0) green:(209/255.0) blue:(100/255.0) alpha:1.f];
             break;
     }
     
-    NSArray *colorsArray = [NSArray arrayWithObjects:(id)[fillColor CGColor], (id)[[fillColor darkerColor] CGColor], nil];
-    CGColorSpaceRef colorSpace =  CGColorSpaceCreateDeviceRGB();
-    const CGFloat locations[2] = {0.f, 1.f};
-    CGGradientRef gradient = CGGradientCreateWithColors(colorSpace, (__bridge CFArrayRef)colorsArray, locations);
-    
-    CGContextDrawLinearGradient(context, gradient, CGPointZero, CGPointMake(0.f, self.bounds.size.height), 0.f);
-    
-    CGGradientRelease(gradient);
-    CGColorSpaceRelease(colorSpace);
+    if (fillColor)
+    {
+        NSArray *colorsArray = [NSArray arrayWithObjects:(id)[fillColor CGColor], (id)[[fillColor darkerColor] CGColor], nil];
+        CGColorSpaceRef colorSpace =  CGColorSpaceCreateDeviceRGB();
+        const CGFloat locations[2] = {0.f, 1.f};
+        CGGradientRef gradient = CGGradientCreateWithColors(colorSpace, (__bridge CFArrayRef)colorsArray, locations);
+        
+        CGContextDrawLinearGradient(context, gradient, CGPointZero, CGPointMake(0.f, self.bounds.size.height), 0.f);
+        
+        CGGradientRelease(gradient);
+        CGColorSpaceRelease(colorSpace);
+    }
     
     CGContextSetFillColorWithColor(context, [UIColor colorWithRed:0.f green:0.f blue:0.f alpha:0.6f].CGColor);
     CGContextFillRect(context, CGRectMake(0.f, rect.size.height - 1.f, rect.size.width, 1.f));
