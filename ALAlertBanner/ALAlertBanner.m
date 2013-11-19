@@ -307,6 +307,14 @@ static CGFloat const kForceHideAnimationDuration = 0.1f;
     return alertBanner;
 }
 
++ (ALAlertBanner *)alertBannerForView:(UIView *)view style:(ALAlertBannerStyle)style position:(ALAlertBannerPosition)position attributedTitle:(NSAttributedString *)attributedTitle attributedSubtitle:(NSAttributedString *)attributedSubtitle tappedBlock:(void(^)(ALAlertBanner *alertBanner))tappedBlock
+{
+    ALAlertBanner *alertBanner = [ALAlertBanner createAlertBannerForView:view style:style position:position title:attributedSubtitle subtitle:attributedSubtitle];
+    alertBanner.allowTapToDismiss = tappedBlock ? NO : alertBanner.allowTapToDismiss;
+    alertBanner.tappedBlock = tappedBlock;
+    return alertBanner;
+}
+
 # pragma mark -
 # pragma mark Internal Class Methods
 
@@ -315,6 +323,17 @@ static CGFloat const kForceHideAnimationDuration = 0.1f;
     
     if (![view isKindOfClass:[UIWindow class]] && position == ALAlertBannerPositionUnderNavBar)
         [[NSException exceptionWithName:@"Wrong ALAlertBannerPosition For View Type" reason:@"ALAlertBannerPositionUnderNavBar should only be used if you are presenting the alert banner on the AppDelegate window. Use ALAlertBannerPositionTop or ALAlertBannerPositionBottom for normal UIViews" userInfo:nil] raise];
+    
+    if ([title isKindOfClass:[NSAttributedString class]])
+    {
+        alertBanner.titleLabel.attributedText = !title ? @" " : title;
+        alertBanner.subtitleLabel.attributedText = subtitle;
+    }
+    else
+    {
+        alertBanner.titleLabel.text = !title ? @" " : title;
+        alertBanner.subtitleLabel.text = subtitle;
+    }
     
     alertBanner.titleLabel.text = !title ? @" " : title;
     alertBanner.subtitleLabel.text = subtitle;

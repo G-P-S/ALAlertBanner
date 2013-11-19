@@ -102,6 +102,8 @@ typedef enum {
  */
 + (ALAlertBanner *)alertBannerForView:(UIView *)view style:(ALAlertBannerStyle)style position:(ALAlertBannerPosition)position title:(NSString *)title subtitle:(NSString *)subtitle tappedBlock:(void(^)(ALAlertBanner *alertBanner))tappedBlock;
 
++ (ALAlertBanner *)alertBannerForView:(UIView *)view style:(ALAlertBannerStyle)style position:(ALAlertBannerPosition)position attributedTitle:(NSAttributedString *)attributedTitle attributedSubtitle:(NSAttributedString *)attributedSubtitle tappedBlock:(void(^)(ALAlertBanner *alertBanner))tappedBlock;
+
 /**
  Show the alert banner
  */
