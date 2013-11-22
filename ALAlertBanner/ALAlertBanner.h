@@ -115,6 +115,11 @@ typedef enum {
 - (void)hide;
 
 /**
+ Sets the background color for the gradient. If color is nil, the banner will have black background with 0.93 opacity
+ */
+- (void)setColor:(UIColor *)color forBannerStyle:(ALAlertBannerStyle)style;
+
+/**
  Returns an array of all banners within a certain view.
  */
 + (NSArray *)alertBannersInView:(UIView *)view;

@@ -119,6 +119,7 @@ static CGFloat const kForceHideAnimationDuration = 0.1f;
 @property (nonatomic, strong) UILabel *subtitleLabel;
 @property (nonatomic, strong) UIImageView *styleImageView;
 @property (nonatomic) CGRect parentFrameUponCreation;
+@property (nonatomic, strong) NSMutableDictionary* styleColors;
 
 @end
 
@@ -142,7 +143,14 @@ static CGFloat const kForceHideAnimationDuration = 0.1f;
     self.alpha = 0.f;
     self.layer.shadowOpacity = 0.5f;
     self.tag = arc4random_uniform(SHRT_MAX);
-    
+
+    // set default colors
+    self.styleColors = [NSMutableDictionary dictionary];
+    self.styleColors[@(ALAlertBannerStyleSuccess)]  = [UIColor colorWithRed:(77/255.0) green:(175/255.0) blue:(67/255.0) alpha:1.f];
+    self.styleColors[@(ALAlertBannerStyleFailure)]  = [UIColor colorWithRed:(173/255.0) green:(48/255.0) blue:(48/255.0) alpha:1.f];
+    self.styleColors[@(ALAlertBannerStyleNotify)]   = [UIColor colorWithRed:(48/255.0) green:(110/255.0) blue:(173/255.0) alpha:1.f];
+    self.styleColors[@(ALAlertBannerStyleWarning)]  = [UIColor colorWithRed:(211/255.0) green:(209/255.0) blue:(100/255.0) alpha:1.f];
+
     [self setupSubviews];
     [self setupInitialValues];
 }
@@ -356,6 +364,18 @@ static CGFloat const kForceHideAnimationDuration = 0.1f;
 
 - (void)hide {
     [self.delegate hideAlertBanner:self forced:NO];
+}
+
+- (void)setColor:(UIColor *)color forBannerStyle:(ALAlertBannerStyle)style
+{
+    if (color != nil)
+    {
+        self.styleColors[@(style)] = color;
+    }
+    else
+    {
+        [self.styleColors removeObjectForKey:@(style)];
+    }
 }
 
 # pragma mark -
@@ -709,22 +729,7 @@ static CGFloat const kForceHideAnimationDuration = 0.1f;
 - (void)drawRect:(CGRect)rect {
     CGContextRef context = UIGraphicsGetCurrentContext();
     
-    UIColor *fillColor;
-    switch (self.style) {
-        case ALAlertBannerStyleSuccess:
-            fillColor = [UIColor colorWithRed:(77/255.0) green:(175/255.0) blue:(67/255.0) alpha:1.f];
-            break;
-        case ALAlertBannerStyleFailure:
-            fillColor = [UIColor colorWithRed:(173/255.0) green:(48/255.0) blue:(48/255.0) alpha:1.f];
-            break;
-        case ALAlertBannerStyleNotify:
-            fillColor = [UIColor colorWithRed:(48/255.0) green:(110/255.0) blue:(173/255.0) alpha:1.f];
-            break;
-        case ALAlertBannerStyleWarning:
-            // for now, ALAlertBannerStyleWarning don't use gradient
-//            fillColor = [UIColor colorWithRed:(211/255.0) green:(209/255.0) blue:(100/255.0) alpha:1.f];
-            break;
-    }
+    UIColor *fillColor =  self.styleColors[@(self.style)];
     
     if (fillColor)
     {
