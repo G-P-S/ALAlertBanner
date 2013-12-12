@@ -540,15 +540,29 @@ static CGFloat const kForceHideAnimationDuration = 0.1f;
         self.state = ALAlertBannerStateVisible;
     }
     
-    else if ([[anim valueForKey:@"anim"] isEqualToString:kHideAlertBannerKey] && flag) {
-        [UIView animateWithDuration:self.shouldForceHide ? kForceHideAnimationDuration : self.fadeOutDuration delay:0.0 options:UIViewAnimationOptionCurveLinear animations:^{
-            self.alpha = 0.f;
-        } completion:^(BOOL finished) {
+    else if ([[anim valueForKey:@"anim"] isEqualToString:kHideAlertBannerKey]) {
+        if (flag)
+        {
+            // animation finished
+            
+            [UIView animateWithDuration:self.shouldForceHide ? kForceHideAnimationDuration : self.fadeOutDuration delay:0.0 options:UIViewAnimationOptionCurveLinear animations:^{
+                self.alpha = 0.f;
+            } completion:^(BOOL finished) {
+                self.state = ALAlertBannerStateHidden;
+                [self.delegate alertBannerDidHide:self inView:self.superview];
+                [[NSNotificationCenter defaultCenter] removeObserver:self];
+                [self removeFromSuperview];
+            }];
+        }
+        else
+        {
+            // animation didn't finish
+
             self.state = ALAlertBannerStateHidden;
             [self.delegate alertBannerDidHide:self inView:self.superview];
             [[NSNotificationCenter defaultCenter] removeObserver:self];
             [self removeFromSuperview];
-        }];
+        }
     }
     
     else if ([[anim valueForKey:@"anim"] isEqualToString:kMoveAlertBannerKey] && flag) {
